@@ -24,8 +24,10 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.plcoding.bluetoothchat.R
 import com.plcoding.bluetoothchat.presentation.components.ChatScreen
 import com.plcoding.bluetoothchat.presentation.components.DeviceScreen
 import com.plcoding.bluetoothchat.ui.theme.BluetoothChatTheme
@@ -93,7 +95,7 @@ class MainActivity : ComponentActivity() {
                     if(state.isConnected) {
                         Toast.makeText(
                             applicationContext,
-                            "You're connected!",
+                            getString(R.string.you_re_connected),
                             Toast.LENGTH_LONG
                         ).show()
                     }
@@ -110,7 +112,7 @@ class MainActivity : ComponentActivity() {
                                 verticalArrangement = Arrangement.Center
                             ) {
                                 CircularProgressIndicator()
-                                Text(text = "Connecting...")
+                                Text(text = stringResource(R.string.connecting))
                             }
                         }
                         state.isConnected -> {
