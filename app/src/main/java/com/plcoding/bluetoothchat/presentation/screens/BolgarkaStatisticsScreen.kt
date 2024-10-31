@@ -1,9 +1,11 @@
 package com.plcoding.bluetoothchat.presentation.screens
 
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -13,10 +15,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.plcoding.bluetoothchat.R
-import com.plcoding.bluetoothchat.domain.chat.BluetoothController
 import com.plcoding.bluetoothchat.presentation.BluetoothViewModel
 import com.plcoding.bluetoothchat.presentation.components.BolgarkaBlock
 
@@ -28,6 +27,7 @@ fun BolgarkaStatisticsScreen(viewModel: BluetoothViewModel?) {
         modifier = Modifier
             .fillMaxSize()
             .background(color = Color.White)
+            .verticalScroll(state = ScrollState(0))
     ) {
         val uiState = viewModel?.state?.collectAsState()?.value
 
@@ -40,7 +40,6 @@ fun BolgarkaStatisticsScreen(viewModel: BluetoothViewModel?) {
                 "Модель" to "УШМВ-125/1700ЭВМ",
                 "Серийный номер" to "912.000175",
                 "Дата производства" to "10.10.2024",
-                "Сообщение" to (uiState?.messages?.joinToString("\n") { it.message } ?: "Нет сообщений")
             )
         )
 
@@ -59,7 +58,7 @@ fun BolgarkaStatisticsScreen(viewModel: BluetoothViewModel?) {
         BolgarkaBlock(
             title = "Статистика по использованию",
             contentMap = mapOf(
-                "Счетчик моточасов" to "${uiState?.operatingHours ?: 0}:00", // Предположим, что это часы
+                "Счетчик моточасов" to "${uiState?.operatingTime ?: 0}", // Предположим, что это часы
                 "Количество отключений по перегрузке" to "${uiState?.overheatShutdownCount ?: 0}",
                 "Количество отключений по заклинивании" to "${uiState?.jamShutdownCount ?: 0}",
                 "Количество отключений по перегреву" to "${uiState?.overheatShutdownCount ?: 0}",

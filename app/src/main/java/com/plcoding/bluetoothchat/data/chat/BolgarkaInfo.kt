@@ -2,7 +2,7 @@ package com.plcoding.bluetoothchat.data.chat
 
 data class BolgarkaInfo(
     var revolutionsPerMinute: Int = 0,
-    var current: Int = 0,
+    var current: Float = 0f,
     var voltage: Int = 0,
     var status: String = "unknown",
     var operatingTime: Int = 0
@@ -16,15 +16,19 @@ data class BolgarkaInfo(
                 // Удаляем префикс и делим по пробелам
                 val data = cleanMessage.removePrefix("!R").trim().split("\\s+".toRegex())
 
-                if (data.size >= 5) {
-                    return BolgarkaInfo(
-                        revolutionsPerMinute = data[0].toIntOrNull() ?: 0,
-                        current = data[1].toIntOrNull() ?: 0,
-                        voltage = data[2].toIntOrNull() ?: 0,
-                        status = data[3],
-                        operatingTime = data[4].toIntOrNull() ?: 0
-                    )
-                }
+                val revolutionsPerMinute = data[0].toIntOrNull() ?: 0
+                val current = data[1].drop(1).toFloatOrNull()?.div(10) ?: 0f //
+                val voltage = data[2].drop(1).toIntOrNull() ?: 0 // Извлекаем число после 'U'
+                val status = data[3].drop(1) // Статус без префикса 'E'
+                val operatingTime = data[4].removePrefix("t").removeSuffix("<CR>").toIntOrNull() ?: 0
+
+                return BolgarkaInfo(
+                    revolutionsPerMinute = revolutionsPerMinute,
+                    current = current,
+                    voltage = voltage,
+                    status = status,
+                    operatingTime = operatingTime
+                )
             }
             throw IllegalArgumentException("Invalid message format")
         }

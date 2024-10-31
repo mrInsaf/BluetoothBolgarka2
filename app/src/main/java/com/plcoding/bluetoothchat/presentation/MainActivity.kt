@@ -114,11 +114,7 @@ class MainActivity : ComponentActivity() {
                             }
                         }
                         state.isConnected -> {
-                            ChatScreen(
-                                state = state,
-                                onDisconnect = viewModel::disconnectFromDevice,
-                                onSendMessage = viewModel::sendMessage
-                            )
+                            BolgarkaStatisticsScreen(viewModel = viewModel)
                         }
                         state.isBolgarkaScreenOpened -> {
                             BolgarkaStatisticsScreen(viewModel = viewModel)

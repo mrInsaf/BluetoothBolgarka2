@@ -41,7 +41,8 @@ fun BolgarkaBlock(
             ) {
                 Text(
                     text = key,
-                    color = Color.Black
+                    color = Color.Black,
+                    modifier = Modifier.fillMaxWidth(0.5f)
                 )
                 if (value is String) {
                     Text(

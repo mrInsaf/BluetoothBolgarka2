@@ -2,6 +2,7 @@ package com.plcoding.bluetoothchat.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.plcoding.bluetoothchat.data.chat.BolgarkaInfo
 import com.plcoding.bluetoothchat.domain.chat.BluetoothController
 import com.plcoding.bluetoothchat.domain.chat.BluetoothDeviceDomain
 import com.plcoding.bluetoothchat.domain.chat.ConnectionResult
@@ -9,6 +10,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import java.util.Locale
 import javax.inject.Inject
 
 @HiltViewModel
@@ -105,6 +107,18 @@ class BluetoothViewModel @Inject constructor(
                     _state.update { it.copy(
                         messages = it.messages + result.message
                     ) }
+                    try {
+                        val bolgarkaInfo = BolgarkaInfo.fromProtocolMessage(result.message.message)
+                        println(bolgarkaInfo)
+                        _state.update { it.copy(
+                            revolutionsPerMinute = bolgarkaInfo.revolutionsPerMinute,
+                            inputPower = bolgarkaInfo.voltage * bolgarkaInfo.current,
+                            operatingTime = formatOperatingTime(bolgarkaInfo.operatingTime)
+                        ) }
+                    }
+                    catch (e: IllegalArgumentException) {
+                        println("это неправильное сообщение")
+                    }
                 }
                 is ConnectionResult.Error -> {
                     _state.update { it.copy(
@@ -128,5 +142,13 @@ class BluetoothViewModel @Inject constructor(
     override fun onCleared() {
         super.onCleared()
         bluetoothController.release()
+    }
+
+    private fun formatOperatingTime(totalSeconds: Int): String {
+        val hours = totalSeconds / 3600
+        val minutes = (totalSeconds % 3600) / 60
+        val seconds = totalSeconds % 60
+
+        return String.format(Locale.getDefault(), "%02d:%02d:%02d", hours, minutes, seconds)
     }
 }

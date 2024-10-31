@@ -16,13 +16,13 @@ data class BluetoothUiState(
 //    Instrument State
     val revolutionsPerMinute: Int = 0,
     val currentTemperature: Int = 0,
-    val inputPower: Int = 0,
+    val inputPower: Float = 0f,
     val outputPower: Int = 0,
 
-    val operatingHours: Int = 0,
+    val operatingTime: String = "00:00:00",
     val rebootCount: Int = 0,
     val jamShutdownCount: Int = 0,
     val overheatShutdownCount: Int = 0,
     val dropDetectionShutdownCount: Int = 0,
 
-)
+    )
