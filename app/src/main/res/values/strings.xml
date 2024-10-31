@@ -8,4 +8,6 @@
     <string name="scanned_devices">Найденные устройства</string>
     <string name="you_re_connected">Успешное подключение</string>
     <string name="connecting">Подключение...</string>
+    <string name="logo">ИНТЕРСКОЛ</string>
+    <string name="instrumentBlockTitle">Инструмент</string>
 </resources>

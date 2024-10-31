@@ -1,4 +1,4 @@
-package com.plcoding.bluetoothchat.presentation.components
+package com.plcoding.bluetoothchat.presentation.screens
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -22,7 +22,8 @@ fun DeviceScreen(
     onStartScan: () -> Unit,
     onStopScan: () -> Unit,
     onStartServer: () -> Unit,
-    onDeviceClick: (BluetoothDevice) -> Unit
+    onDeviceClick: (BluetoothDevice) -> Unit,
+    onBolgarkaClick: () -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -36,18 +37,33 @@ fun DeviceScreen(
                 .fillMaxWidth()
                 .weight(1f)
         )
-        Row(
+        Column(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceAround
+            verticalArrangement = Arrangement.SpaceAround
         ) {
-            Button(onClick = onStartScan) {
+            Button(
+                onClick = onStartScan,
+                modifier = Modifier.fillMaxWidth()
+                ) {
                 Text(text = stringResource(R.string.start_scan))
             }
-            Button(onClick = onStopScan) {
+            Button(
+                onClick = onStopScan,
+                modifier = Modifier.fillMaxWidth()
+                ) {
                 Text(text = stringResource(R.string.stop_scan))
             }
-            Button(onClick = onStartServer) {
+            Button(
+                onClick = onStartServer,
+                modifier = Modifier.fillMaxWidth()
+                ) {
                 Text(text = stringResource(R.string.start_server))
+            }
+            Button(
+                onClick = onBolgarkaClick,
+                modifier = Modifier.fillMaxWidth()
+                ) {
+                Text(text = "Устройство")
             }
         }
     }

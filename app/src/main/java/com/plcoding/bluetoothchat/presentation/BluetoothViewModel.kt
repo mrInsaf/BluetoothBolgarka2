@@ -85,6 +85,12 @@ class BluetoothViewModel @Inject constructor(
         bluetoothController.stopDiscovery()
     }
 
+    fun onBolgarkaClick() {
+        _state.update { it.copy(
+            isBolgarkaScreenOpened = true
+        ) }
+    }
+
     private fun Flow<ConnectionResult>.listen(): Job {
         return onEach { result ->
             when(result) {
