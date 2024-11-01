@@ -107,18 +107,7 @@ class BluetoothViewModel @Inject constructor(
                     _state.update { it.copy(
                         messages = it.messages + result.message
                     ) }
-                    try {
-                        val bolgarkaInfo = BolgarkaInfo.fromProtocolMessage(result.message.message)
-                        println(bolgarkaInfo)
-                        _state.update { it.copy(
-                            revolutionsPerMinute = bolgarkaInfo.revolutionsPerMinute,
-                            inputPower = bolgarkaInfo.voltage * bolgarkaInfo.current,
-                            operatingTime = formatOperatingTime(bolgarkaInfo.operatingTime)
-                        ) }
-                    }
-                    catch (e: IllegalArgumentException) {
-                        println("это неправильное сообщение")
-                    }
+                    parseAndApplyDeviceData(result)
                 }
                 is ConnectionResult.Error -> {
                     _state.update { it.copy(
@@ -137,6 +126,36 @@ class BluetoothViewModel @Inject constructor(
                 ) }
             }
             .launchIn(viewModelScope)
+    }
+
+    private fun parseAndApplyDeviceData(result: ConnectionResult.TransferSucceeded) {
+        try {
+            val bolgarkaInfo = BolgarkaInfo.fromProtocolMessage(result.message.message)
+            println(bolgarkaInfo)
+            when (bolgarkaInfo.status) {
+                1 -> _state.update { currentState ->  // Ошибка перегрева
+                    currentState.copy(overheatShutdownCount = currentState.overheatShutdownCount + 1)
+                }
+                2 -> _state.update { currentState ->  // Ошибка при перезагрузке
+                    currentState.copy(rebootCount = currentState.rebootCount + 1)
+                }
+                3 -> _state.update { currentState ->  // Ошибка по заклиниванию
+                    currentState.copy(jamShutdownCount = currentState.jamShutdownCount + 1)
+                }
+                4 -> _state.update { currentState ->  // Ошибка по падению
+                    currentState.copy(dropDetectionShutdownCount = currentState.dropDetectionShutdownCount + 1)
+                }
+                else -> {  }
+            }
+            _state.update { it.copy(
+                revolutionsPerMinute = bolgarkaInfo.revolutionsPerMinute,
+                inputPower = bolgarkaInfo.voltage * bolgarkaInfo.current,
+                operatingTime = formatOperatingTime(bolgarkaInfo.operatingTime)
+            ) }
+        }
+        catch (e: IllegalArgumentException) {
+            println("это неправильное сообщение")
+        }
     }
 
     override fun onCleared() {

@@ -4,7 +4,7 @@ data class BolgarkaInfo(
     var revolutionsPerMinute: Int = 0,
     var current: Float = 0f,
     var voltage: Int = 0,
-    var status: String = "unknown",
+    var status: Int = 0,
     var operatingTime: Int = 0
 ) {
     companion object {
@@ -19,7 +19,7 @@ data class BolgarkaInfo(
                 val revolutionsPerMinute = data[0].toIntOrNull() ?: 0
                 val current = data[1].drop(1).toFloatOrNull()?.div(10) ?: 0f //
                 val voltage = data[2].drop(1).toIntOrNull() ?: 0 // Извлекаем число после 'U'
-                val status = data[3].drop(1) // Статус без префикса 'E'
+                val status = data[3].drop(1).toIntOrNull() ?: 0 // Статус без префикса 'E'
                 val operatingTime = data[4].removePrefix("t").removeSuffix("<CR>").toIntOrNull() ?: 0
 
                 return BolgarkaInfo(
@@ -34,3 +34,4 @@ data class BolgarkaInfo(
         }
     }
 }
+

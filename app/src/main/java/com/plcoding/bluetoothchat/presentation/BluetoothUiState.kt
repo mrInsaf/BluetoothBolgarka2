@@ -19,6 +19,7 @@ data class BluetoothUiState(
     val inputPower: Float = 0f,
     val outputPower: Int = 0,
 
+    val currentStatus: Int = 0,
     val operatingTime: String = "00:00:00",
     val rebootCount: Int = 0,
     val jamShutdownCount: Int = 0,
