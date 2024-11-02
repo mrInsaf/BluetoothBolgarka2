@@ -16,6 +16,7 @@ import com.plcoding.bluetoothchat.domain.chat.BluetoothMessage
 import com.plcoding.bluetoothchat.domain.chat.ConnectionResult
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.io.IOException
@@ -153,7 +154,7 @@ class AndroidBluetoothController(
 
             currentClientSocket = bluetoothAdapter
                 ?.getRemoteDevice(device.address)
-                ?.createRfcommSocketToServiceRecord(
+                ?.createInsecureRfcommSocketToServiceRecord(
                     UUID.fromString(SERVICE_UUID)
                 )
             stopDiscovery()
@@ -163,6 +164,8 @@ class AndroidBluetoothController(
                     socket.connect()
                     emit(ConnectionResult.ConnectionEstablished)
 
+                    delay(500)
+
                     BluetoothDataTransferService(socket).also {
                         dataTransferService = it
                         emitAll(
@@ -170,7 +173,9 @@ class AndroidBluetoothController(
                                 .map { ConnectionResult.TransferSucceeded(it) }
                         )
                     }
+                    println("Successful connection")
                 } catch(e: IOException) {
+                    println("Connection error: ${e.message}")
                     socket.close()
                     currentClientSocket = null
                     emit(ConnectionResult.Error("Connection was interrupted"))
@@ -231,6 +236,6 @@ class AndroidBluetoothController(
     }
 
     companion object {
-        const val SERVICE_UUID = "27b7d1da-08c7-4505-a6d1-2459987e5e2d"
+        const val SERVICE_UUID = "00001101-0000-1000-8000-00805F9B34FB"
     }
 }
